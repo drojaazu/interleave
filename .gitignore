@@ -1,0 +1,5 @@
+build/
+bin/
+etc/
+.vscode/
+.clang-format
