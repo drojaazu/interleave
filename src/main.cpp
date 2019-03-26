@@ -1,5 +1,7 @@
 #include "main.hpp"
 
+const char version[] = "1.0";
+
 u8 width{1}, skip_after{0}, skip_before{0};
 std::ostream *outdata = nullptr;
 std::ifstream *infiles = nullptr;
@@ -90,7 +92,9 @@ u8 process_args(int argc, char **argv)
 	const option long_opts[] = {{"width", required_argument, nullptr, 'w'},
 															{"output", required_argument, nullptr, 'o'},
 															{"skip-after", required_argument, nullptr, 'a'},
-															{"skip-before", required_argument, nullptr, 'b'}};
+															{"skip-before", required_argument, nullptr, 'b'},
+															{"help", no_argument, nullptr, 'h'},
+															{nullptr, 0, nullptr, 0}};
 
 	int this_opt;
 
@@ -115,6 +119,11 @@ u8 process_args(int argc, char **argv)
 				// --skip-before -b - skip x bytes before each read
 				skip_before = std::stoul(optarg);
 				break;
+			case 'h':
+				// --help
+				print_help();
+				exit(0);
+				break;
 		}
 	}
 
@@ -125,6 +134,29 @@ u8 process_args(int argc, char **argv)
 	else
 	{
 		std::cerr << "No input files specified!" << std::endl;
+		print_help();
 		exit(3);
 	}
+}
+
+void print_help()
+{
+	std::cerr << "interleave version " << version << std::endl << std::endl;
+	std::cerr << "Usage:" << std::endl;
+	std::cerr << "interleave infile1 infile2 ..." << std::endl;
+	std::cerr << "Options:" << std::endl;
+	std::cerr << "  --width, -w         Number of bytes to interleave; optional; "
+							 "default is 2"
+						<< std::endl;
+	std::cerr
+			<< "  --output, -o        Output interleaved file; optional; default "
+				 "is stdout"
+			<< std::endl;
+	std::cerr << "  --skip-before, -b   Number of bytes to skip over before each "
+							 "read; optional"
+						<< std::endl;
+	std::cerr << "  --skip-after, -a    Number of bytes to skip over after each "
+							 "read; optional"
+						<< std::endl;
+	std::cerr << "  --help, -h          Display this text" << std::endl;
 }
